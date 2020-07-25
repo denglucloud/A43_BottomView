@@ -20,8 +20,11 @@
                motion:waveOffset="0dp" />
        </KeyFrameSet>
 
-        <!-- 添加点击 -->
-        <OnClick/>
+        <!--
+            添加点击
+            注意这里写了，那么在MainActivity代码中写就，就没用，只有这里会起作用
+        -->
+<!--        <OnClick/>-->
     </Transition>
 
     <ConstraintSet android:id="@+id/start">
