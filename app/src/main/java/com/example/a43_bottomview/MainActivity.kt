@@ -19,6 +19,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        /**
+         * 重构代码
+         * 设置一个map映射：NavHostFragment中fragment不同页面分别对应底部导航栏不同按钮的map映射:
+         */
+        val destinationMap = mapOf(
+            R.id.messageFragment to messageMotionLayout,
+            R.id.contactFragment to contactMotionLayout,
+            R.id.exploreFragment to exploreMotionLayout,
+            R.id.accountFragment to accountMotionLayout
+        )
 
         /**
          * 将底部导航栏按键和Navigation的NavHostFragment导航页面关联起来
@@ -29,13 +39,12 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(
             navController,
             //设置导航条配置
-            AppBarConfiguration(setOf(R.id.messageFragment,R.id.contactFragment,R.id.exploreFragment,R.id.accountFragment))
+            AppBarConfiguration(destinationMap.keys)
         )
         //messageMotionLayout就是图标layout文件中，MotionLayout的id
-        messageMotionLayout.setOnClickListener{navController.navigate(R.id.messageFragment)}
-        contactMotionLayout.setOnClickListener{navController.navigate(R.id.contactFragment)}
-        exploreMotionLayout.setOnClickListener{navController.navigate(R.id.exploreFragment)}
-        accountMotionLayout.setOnClickListener{navController.navigate(R.id.accountFragment)}
+        destinationMap.forEach{map->
+            map.value.setOnClickListener{ navController.navigate(map.key)}
+        }
 
         /**
          * 让底部导航栏添加显示过渡动画
@@ -52,20 +61,12 @@ class MainActivity : AppCompatActivity() {
             /*
                 先使过渡动画默认归0
              */
-            messageMotionLayout.progress = 0f
-            contactMotionLayout.progress = 0f
-            exploreMotionLayout.progress = 0f
-            accountMotionLayout.progress = 0f
+            destinationMap.values.forEach{it.progress = 0f}
 
             /*
                 再根据不同导航页面设置的过渡动画
              */
-            when(destination.id){
-                R.id.messageFragment -> messageMotionLayout.transitionToEnd()
-                R.id.contactFragment -> contactMotionLayout.transitionToEnd()
-                R.id.exploreFragment -> exploreMotionLayout.transitionToEnd()
-                R.id.accountFragment -> accountMotionLayout.transitionToEnd()
-            }
+            destinationMap[destination.id]?.transitionToEnd()
         }
 
     }
